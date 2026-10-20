@@ -14,7 +14,14 @@ const AdminCategories = () => {
 
   const load = () => {
     setLoading(true);
-    api.get('/categories').then(({ data }) => setCategories(data)).finally(() => setLoading(false));
+    api
+      .get('/categories')
+      .then(({ data }) => setCategories(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error('Failed to load categories:', err);
+        setCategories([]);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, []);
@@ -67,7 +74,7 @@ const AdminCategories = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {categories.map((c) => (
+        {(Array.isArray(categories) ? categories : []).map((c) => (
           <div key={c._id} className="card p-4">
             <div className="flex justify-between items-start">
               <h3 className="font-semibold">{c.name}</h3>

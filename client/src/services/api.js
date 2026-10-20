@@ -13,7 +13,20 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If the server returned an HTML document instead of API JSON (e.g. SPA fallback rewrite)
+    if (
+      typeof response.data === 'string' &&
+      (response.data.includes('<!DOCTYPE html>') || response.data.includes('<html'))
+    ) {
+      const err = new Error(
+        `API endpoint returned HTML instead of JSON for ${response.config.url}. Please check your backend connection.`
+      );
+      err.response = response;
+      return Promise.reject(err);
+    }
+    return response;
+  },
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('aurashop_token');

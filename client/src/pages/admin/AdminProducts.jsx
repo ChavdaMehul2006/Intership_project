@@ -20,13 +20,28 @@ const AdminProducts = () => {
 
   const load = async () => {
     setLoading(true);
-    const [productsRes, categoriesRes] = await Promise.all([
-      api.get('/products', { params: { limit: 1000 } }),
-      api.get('/categories')
-    ]);
-    setProducts(productsRes.data.products);
-    setCategories(categoriesRes.data);
-    setLoading(false);
+    try {
+      const [productsRes, categoriesRes] = await Promise.all([
+        api.get('/products', { params: { limit: 1000 } }).catch((err) => {
+          console.error('Failed to load admin products:', err);
+          return { data: { products: [] } };
+        }),
+        api.get('/categories').catch((err) => {
+          console.error('Failed to load admin categories:', err);
+          return { data: [] };
+        })
+      ]);
+      const prodList = productsRes?.data?.products || productsRes?.data;
+      setProducts(Array.isArray(prodList) ? prodList : []);
+      const catList = categoriesRes?.data;
+      setCategories(Array.isArray(catList) ? catList : []);
+    } catch (err) {
+      console.error('Admin load error:', err);
+      setProducts([]);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, []);
@@ -109,7 +124,7 @@ const AdminProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
+            {(Array.isArray(products) ? products : []).map((p) => (
               <tr key={p._id} className="border-t border-gray-100">
                 <td className="p-3 flex items-center gap-2">
                   <img src={p.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'} className="w-10 h-10 rounded-lg object-cover" alt="" />
@@ -149,7 +164,7 @@ const AdminProducts = () => {
               <select required className="input-field" value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}>
                 <option value="">Select Category</option>
-                {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
+                {(Array.isArray(categories) ? categories : []).map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
               <div className="grid grid-cols-2 gap-3">
                 <input placeholder="Brand" className="input-field" value={form.brand}

@@ -10,7 +10,14 @@ const AdminUsers = () => {
 
   const load = () => {
     setLoading(true);
-    api.get('/users').then(({ data }) => setUsers(data)).finally(() => setLoading(false));
+    api
+      .get('/users')
+      .then(({ data }) => setUsers(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error('Failed to load users:', err);
+        setUsers([]);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, []);
@@ -45,7 +52,7 @@ const AdminUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
+            {(Array.isArray(users) ? users : []).map((u) => (
               <tr key={u._id} className="border-t border-gray-100">
                 <td className="p-3">{u.name}</td>
                 <td className="p-3">{u.email}</td>

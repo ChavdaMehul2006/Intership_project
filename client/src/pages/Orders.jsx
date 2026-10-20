@@ -37,7 +37,7 @@ const OrderDetail = ({ orderId }) => {
         </div>
 
         <div className="mt-4 divide-y divide-gray-100">
-          {order.items.map((item, idx) => (
+          {(Array.isArray(order.items) ? order.items : []).map((item, idx) => (
             <div key={idx} className="flex justify-between py-3">
               <div className="flex items-center gap-3">
                 <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
@@ -71,7 +71,14 @@ const OrdersList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/orders/my').then(({ data }) => setOrders(data)).finally(() => setLoading(false));
+    api
+      .get('/orders/my')
+      .then(({ data }) => setOrders(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error('Failed to load orders:', err);
+        setOrders([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <Loader />;
@@ -79,11 +86,11 @@ const OrdersList = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">My Orders</h1>
-      {orders.length === 0 ? (
+      {!Array.isArray(orders) || orders.length === 0 ? (
         <p className="text-gray-500">You haven't placed any orders yet.</p>
       ) : (
         <div className="space-y-4">
-          {orders.map((o) => (
+          {(Array.isArray(orders) ? orders : []).map((o) => (
             <Link key={o._id} to={`/orders/${o._id}`} className="card p-4 flex justify-between items-center hover:shadow-lg transition">
               <div>
                 <p className="font-semibold">Order #{o._id.slice(-8).toUpperCase()}</p>

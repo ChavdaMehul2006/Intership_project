@@ -20,7 +20,13 @@ const Products = () => {
   const maxPrice = searchParams.get('maxPrice') || '';
 
   useEffect(() => {
-    api.get('/categories').then(({ data }) => setCategories(data));
+    api
+      .get('/categories')
+      .then(({ data }) => setCategories(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error('Failed to load categories:', err);
+        setCategories([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -30,8 +36,13 @@ const Products = () => {
         params: { keyword, category, sort, page, minPrice, maxPrice, limit: 12 }
       })
       .then(({ data }) => {
-        setProducts(data.products);
-        setPages(data.pages);
+        const prodList = data?.products || data;
+        setProducts(Array.isArray(prodList) ? prodList : []);
+        setPages(data?.pages || 1);
+      })
+      .catch((err) => {
+        console.error('Failed to load products:', err);
+        setProducts([]);
       })
       .finally(() => setLoading(false));
   }, [keyword, category, sort, page, minPrice, maxPrice]);
@@ -60,7 +71,7 @@ const Products = () => {
                 onChange={(e) => updateParam('category', e.target.value)}
               >
                 <option value="">All Categories</option>
-                {categories.map((c) => (
+                {(Array.isArray(categories) ? categories : []).map((c) => (
                   <option key={c._id} value={c._id}>{c.name}</option>
                 ))}
               </select>
@@ -112,7 +123,7 @@ const Products = () => {
           ) : (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
-                {products.map((p) => (
+                {(Array.isArray(products) ? products : []).map((p) => (
                   <ProductCard key={p._id} product={p} />
                 ))}
               </div>

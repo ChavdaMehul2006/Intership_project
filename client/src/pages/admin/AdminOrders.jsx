@@ -12,7 +12,14 @@ const AdminOrders = () => {
 
   const load = () => {
     setLoading(true);
-    api.get('/orders/all').then(({ data }) => setOrders(data)).finally(() => setLoading(false));
+    api
+      .get('/orders/all')
+      .then(({ data }) => setOrders(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error('Failed to load admin orders:', err);
+        setOrders([]);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, []);
@@ -44,7 +51,7 @@ const AdminOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((o) => (
+            {(Array.isArray(orders) ? orders : []).map((o) => (
               <tr key={o._id} className="border-t border-gray-100">
                 <td className="p-3">#{o._id.slice(-8).toUpperCase()}</td>
                 <td className="p-3">{o.user?.name}<br /><span className="text-gray-400">{o.user?.email}</span></td>

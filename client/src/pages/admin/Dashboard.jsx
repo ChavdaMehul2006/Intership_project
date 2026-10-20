@@ -12,25 +12,25 @@ const Dashboard = () => {
   useEffect(() => {
     const load = async () => {
       const [productsRes, ordersRes, usersRes] = await Promise.all([
-        api.get('/products', { params: { limit: 1000 } }),
-        api.get('/orders/all'),
-        api.get('/users')
+        api.get('/products', { params: { limit: 1000 } }).catch(() => ({ data: { total: 0, products: [] } })),
+        api.get('/orders/all').catch(() => ({ data: [] })),
+        api.get('/users').catch(() => ({ data: [] }))
       ]);
 
-      const orders = ordersRes.data;
-      const revenue = orders.reduce((sum, o) => sum + o.totalPrice, 0);
+      const orders = Array.isArray(ordersRes?.data) ? ordersRes.data : [];
+      const revenue = orders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
 
       const monthly = {};
       orders.forEach((o) => {
         const month = new Date(o.createdAt).toLocaleString('default', { month: 'short' });
-        monthly[month] = (monthly[month] || 0) + o.totalPrice;
+        monthly[month] = (monthly[month] || 0) + (o.totalPrice || 0);
       });
       const chartData = Object.entries(monthly).map(([month, total]) => ({ month, total }));
 
       setStats({
-        productCount: productsRes.data.total,
+        productCount: productsRes?.data?.total || (Array.isArray(productsRes?.data?.products) ? productsRes.data.products.length : 0),
         orderCount: orders.length,
-        userCount: usersRes.data.length,
+        userCount: Array.isArray(usersRes?.data) ? usersRes.data.length : 0,
         revenue,
         chartData
       });

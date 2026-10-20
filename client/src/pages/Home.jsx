@@ -14,11 +14,25 @@ const Home = () => {
     const load = async () => {
       try {
         const [productsRes, categoriesRes] = await Promise.all([
-          api.get('/products', { params: { featured: true, limit: 8 } }),
-          api.get('/categories')
+          api.get('/products', { params: { featured: true, limit: 8 } }).catch((err) => {
+            console.error('Featured products error:', err);
+            return { data: { products: [] } };
+          }),
+          api.get('/categories').catch((err) => {
+            console.error('Categories error:', err);
+            return { data: [] };
+          })
         ]);
-        setFeatured(productsRes.data.products);
-        setCategories(categoriesRes.data);
+
+        const prodList = productsRes?.data?.products || productsRes?.data;
+        setFeatured(Array.isArray(prodList) ? prodList : []);
+
+        const catList = categoriesRes?.data;
+        setCategories(Array.isArray(catList) ? catList : []);
+      } catch (err) {
+        console.error('Home load error:', err);
+        setFeatured([]);
+        setCategories([]);
       } finally {
         setLoading(false);
       }
@@ -65,7 +79,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 py-6">
         <h2 className="text-xl font-bold mb-4">Shop by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {categories.map((cat) => (
+          {(Array.isArray(categories) ? categories : []).map((cat) => (
             <Link
               key={cat._id}
               to={`/products?category=${cat._id}`}
@@ -88,7 +102,7 @@ const Home = () => {
           <Loader />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {featured.map((p) => (
+            {(Array.isArray(featured) ? featured : []).map((p) => (
               <ProductCard key={p._id} product={p} />
             ))}
           </div>

@@ -27,8 +27,12 @@ const ProductDetail = () => {
     try {
       const { data } = await api.get(`/products/${slug}`);
       setProduct(data);
-      const reviewsRes = await api.get(`/products/${data._id}/reviews`);
-      setReviews(reviewsRes.data);
+      const reviewsRes = await api.get(`/products/${data._id}/reviews`).catch(() => ({ data: [] }));
+      setReviews(Array.isArray(reviewsRes.data) ? reviewsRes.data : []);
+    } catch (err) {
+      console.error('Failed to load product details:', err);
+      setProduct(null);
+      setReviews([]);
     } finally {
       setLoading(false);
     }
@@ -163,8 +167,8 @@ const ProductDetail = () => {
         </form>
 
         <div className="space-y-4">
-          {reviews.length === 0 && <p className="text-gray-500">No reviews yet. Be the first!</p>}
-          {reviews.map((r) => (
+          {(!Array.isArray(reviews) || reviews.length === 0) && <p className="text-gray-500">No reviews yet. Be the first!</p>}
+          {(Array.isArray(reviews) ? reviews : []).map((r) => (
             <div key={r._id} className="card p-4">
               <div className="flex items-center justify-between">
                 <span className="font-semibold">{r.user?.name || 'Anonymous'}</span>
