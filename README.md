@@ -124,3 +124,29 @@ The React app starts on `http://localhost:3000` and proxies `/api` and `/uploads
 - This project has been verified to build cleanly (`npm run build` in `client/`) and all backend
   modules load without errors. Running the app locally still requires a MongoDB instance (local or Atlas).
 - Product images use high-quality, authentic photos curated in `server/data/productImages.js` matching each product name and category, with support for custom photo uploads via Multer in the admin dashboard.
+
+---
+
+## Deployment Guide
+
+### Option A: Render (Full-Stack Monorepo - Recommended)
+1. Push your repository to GitHub.
+2. Sign in to [Render](https://render.com) and click **New > Blueprint**.
+3. Connect your GitHub repository `Intership_project`. Render will read `render.yaml` automatically.
+4. Set the `MONGODB_URI` environment variable with your MongoDB Atlas connection string.
+5. Click **Apply**. The frontend and backend will build and deploy on a single live URL.
+
+### Option B: Vercel (Frontend) + Render (Backend)
+1. **Backend on Render**:
+   - Create a Web Service pointing to repository root or `server/`.
+   - Build Command: `npm install`
+   - Start Command: `node server.js`
+   - Set Environment Variables: `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRE`.
+2. **Frontend on Vercel**:
+   - Import your repository on [Vercel](https://vercel.com).
+   - Set **Root Directory**: `client`
+   - Framework Preset: `Vite`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Set Environment Variable: `VITE_API_URL` to your backend URL (e.g. `https://aurashop-api.onrender.com/api`).
+   - Click **Deploy**.

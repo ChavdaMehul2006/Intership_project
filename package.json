@@ -1,0 +1,13 @@
+{
+  "name": "aurashop",
+  "version": "1.0.0",
+  "description": "Full-stack eCommerce application with glassmorphic UI",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm install && npm run build",
+    "build:server": "cd server && npm install",
+    "start": "cd server && npm start",
+    "seed": "cd server && npm run seed"
+  }
+}
