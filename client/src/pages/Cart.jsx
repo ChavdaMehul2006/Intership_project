@@ -32,7 +32,7 @@ const Cart = () => {
             const price = product.discountPrice > 0 ? product.discountPrice : product.price;
             return (
               <div key={product._id} className="card p-4 flex gap-4 items-center">
-                <img src={product.images[0]} alt={product.name} className="w-20 h-20 rounded-xl object-cover" />
+                <img src={product.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'} alt={product.name} className="w-20 h-20 rounded-xl object-cover" />
                 <div className="flex-1">
                   <Link to={`/products/${product.slug}`} className="font-semibold hover:text-aura-600">
                     {product.name}

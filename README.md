@@ -123,5 +123,4 @@ The React app starts on `http://localhost:3000` and proxies `/api` and `/uploads
 
 - This project has been verified to build cleanly (`npm run build` in `client/`) and all backend
   modules load without errors. Running the app locally still requires a MongoDB instance (local or Atlas).
-- Product images default to placeholder photos (`picsum.photos`) from the seed script — replace with
-  real product photos or wire up the Multer upload endpoint (already built into the Products admin form) for production use.
+- Product images use high-quality, authentic photos curated in `server/data/productImages.js` matching each product name and category, with support for custom photo uploads via Multer in the admin dashboard.

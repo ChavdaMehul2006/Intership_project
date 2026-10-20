@@ -9,16 +9,37 @@ const Category = require('../models/Category');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Review = require('../models/Review');
+const { getImagesForProduct } = require('./productImages');
 
 const slugify = (str) =>
   str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-');
 
 const categoriesData = [
-  { name: 'Electronics', description: 'Gadgets, devices and accessories' },
-  { name: 'Fashion', description: 'Clothing, footwear and accessories' },
-  { name: 'Home & Living', description: 'Furniture and home decor' },
-  { name: 'Beauty', description: 'Skincare, makeup and personal care' },
-  { name: 'Sports & Outdoors', description: 'Fitness and outdoor gear' }
+  {
+    name: 'Electronics',
+    description: 'Gadgets, devices and accessories',
+    image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    name: 'Fashion',
+    description: 'Clothing, footwear and accessories',
+    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    name: 'Home & Living',
+    description: 'Furniture and home decor',
+    image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    name: 'Beauty',
+    description: 'Skincare, makeup and personal care',
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    name: 'Sports & Outdoors',
+    description: 'Fitness and outdoor gear',
+    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80'
+  }
 ];
 
 const productNames = {
@@ -78,7 +99,7 @@ const seed = async () => {
         discountPrice: hasDiscount ? Math.round(price * 0.8) : 0,
         category: cat._id,
         brand: 'AuraShop',
-        images: [`https://picsum.photos/seed/${slugify(name)}/600/600`],
+        images: getImagesForProduct(name),
         stock: randomBetween(0, 60),
         sku: `SKU-${Math.random().toString(36).slice(2, 9).toUpperCase()}`,
         tags: [cat.name.toLowerCase()],

@@ -112,7 +112,7 @@ const AdminProducts = () => {
             {products.map((p) => (
               <tr key={p._id} className="border-t border-gray-100">
                 <td className="p-3 flex items-center gap-2">
-                  <img src={p.images[0]} className="w-10 h-10 rounded-lg object-cover" alt="" />
+                  <img src={p.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'} className="w-10 h-10 rounded-lg object-cover" alt="" />
                   {p.name}
                 </td>
                 <td className="p-3">{p.category?.name}</td>

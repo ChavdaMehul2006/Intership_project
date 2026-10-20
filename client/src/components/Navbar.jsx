@@ -21,7 +21,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-40 glass shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-aura-600 to-aura-400 bg-clip-text text-transparent">
-          AuraShop
+          AlphaShop
         </Link>
 
         <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md items-center">

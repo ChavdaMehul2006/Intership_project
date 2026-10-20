@@ -67,13 +67,13 @@ const ProductDetail = () => {
         <div>
           <div className="card aspect-square overflow-hidden mb-3">
             <img
-              src={product.images[activeImage] || product.images[0]}
+              src={product.images?.[activeImage] || product.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}
               alt={product.name}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="flex gap-2">
-            {product.images.map((img, idx) => (
+            {(product.images || []).map((img, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveImage(idx)}

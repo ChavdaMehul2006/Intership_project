@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
     <div className="card overflow-hidden group flex flex-col">
       <Link to={`/products/${product.slug}`} className="relative block aspect-square overflow-hidden bg-gray-100">
         <img
-          src={product.images?.[0] || 'https://picsum.photos/seed/placeholder/600/600'}
+          src={product.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
